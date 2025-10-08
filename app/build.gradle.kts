@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("kapt")
 }
 
 android {
@@ -41,6 +42,18 @@ android {
 
 dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.5")
+
+    // 1. Navigation Compose (sử dụng phiên bản ổn định)
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // 2. ViewModel & Lifecycle cho Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose")
+
+    // 3. Room Database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

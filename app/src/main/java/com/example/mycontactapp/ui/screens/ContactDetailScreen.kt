@@ -13,24 +13,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import com.example.mycontactapp.data.Contact // Thêm nếu chưa có
-import com.example.mycontactapp.data.sampleContacts
 import com.example.mycontactapp.navigation.AppDestinations // Thêm import
 import com.example.mycontactapp.ui.components.AppTopBar
 import com.example.mycontactapp.utils.makeCall
 import android.content.pm.PackageManager
-import androidx.compose.ui.res.colorResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mycontactapp.ui.ContactViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactDetailScreen(
     navController: NavHostController,
-    contactId: Int?
+    contactId: Int?,
+    viewModel: ContactViewModel = viewModel()
 ) {
     val context = LocalContext.current
     // Sử dụng derivedStateOf để contact tự cập nhật khi sampleContacts thay đổi
-    val contact by remember(contactId) {
-        derivedStateOf { sampleContacts.find { it.id == contactId } }
+    val contact by if (contactId != null) {
+        viewModel.getContactById(contactId).collectAsState()
+    } else {
+        remember { mutableStateOf(null) }
     }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -125,7 +127,7 @@ fun ContactDetailScreen(
                 TextButton(
                     onClick = {
                         contact?.let { contactToDelete ->
-                            sampleContacts.remove(contactToDelete) // Xóa khỏi danh sách
+                            viewModel.deleteContact(contactToDelete)
                             Toast.makeText(context, "Đã xóa liên hệ.", Toast.LENGTH_SHORT).show()
                             showDeleteDialog = false
                             navController.popBackStack() // Quay lại màn hình danh sách

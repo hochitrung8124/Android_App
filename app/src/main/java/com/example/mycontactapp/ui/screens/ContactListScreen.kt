@@ -3,6 +3,7 @@ package com.example.mycontactapp.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -17,26 +18,31 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.mycontactapp.R
-import com.example.mycontactapp.data.Contact // Import Contact
-import com.example.mycontactapp.data.sampleContacts // Import sampleContacts
 import com.example.mycontactapp.navigation.AppDestinations
+import com.example.mycontactapp.ui.ContactViewModel
 import com.example.mycontactapp.ui.components.AppTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactListScreen(navController: NavHostController) {
+fun ContactListScreen(navController: NavHostController, viewModel: ContactViewModel = viewModel()) {
     val context = LocalContext.current // Giữ context nếu cần cho Toast hoặc các việc khác sau này
     var nameInput by remember { mutableStateOf(TextFieldValue()) }
     var phoneNumberInput by remember { mutableStateOf(TextFieldValue()) }
-    var searchQuery by remember { mutableStateOf("") }
     var showAddContactDialog by remember { mutableStateOf(false) }
 
+    // Lấy danh sách liên hệ từ StateFlow của ViewModel
+    val allContacts by viewModel.allContacts.collectAsState()
+
+    var searchQuery by remember { mutableStateOf("") }
+
+    // Lọc danh sách dựa trên allContacts
     val filteredContacts = if (searchQuery.isBlank()) {
-        sampleContacts
+        allContacts
     } else {
-        sampleContacts.filter {
+        allContacts.filter {
             it.name.contains(searchQuery, ignoreCase = true) ||
                     it.phoneNumber.contains(searchQuery, ignoreCase = true)
         }
@@ -88,8 +94,10 @@ fun ContactListScreen(navController: NavHostController) {
                     .weight(1f)
                     .padding(horizontal = 16.dp)
             ) {
-                items(filteredContacts.size) { index ->
-                    val contact = filteredContacts[index]
+                items(
+                    items = filteredContacts,
+                    key = { contact -> contact.id }
+                ) { contact ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -138,12 +146,8 @@ fun ContactListScreen(navController: NavHostController) {
                 TextButton(
                     onClick = {
                         if (nameInput.text.isNotBlank() && phoneNumberInput.text.isNotBlank()) {
-                            val newContact = Contact(
-                                id = (sampleContacts.maxOfOrNull { it.id } ?: 0) + 1,
-                                name = nameInput.text,
-                                phoneNumber = phoneNumberInput.text
-                            )
-                            sampleContacts.add(newContact)
+                            viewModel.addContact(nameInput.text, phoneNumberInput.text)
+
                             nameInput = TextFieldValue("")
                             phoneNumberInput = TextFieldValue("")
                             showAddContactDialog = false

@@ -1,11 +1,15 @@
 package com.example.mycontactapp.data
 
-import androidx.compose.runtime.mutableStateListOf
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class Contact(val id: Int, val name: String, val phoneNumber: String)
+// Biến Contact thành một bảng trong database
+@Entity(tableName = "contacts")
+data class Contact(
+    // Đánh dấu 'id' là khóa chính và để database tự động tạo giá trị
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
 
-val sampleContacts = mutableStateListOf(
-    Contact(1, "Nguyen Van A", "0123456789"),
-    Contact(2, "Le Thi B", "0987654321"),
-    Contact(3, "Tran Van C", "0121987654")
+    val name: String,
+    val phoneNumber: String
 )
