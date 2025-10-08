@@ -41,8 +41,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.navigation:navigation-compose:2.9.5")
-
     // 1. Navigation Compose (sử dụng phiên bản ổn định)
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
