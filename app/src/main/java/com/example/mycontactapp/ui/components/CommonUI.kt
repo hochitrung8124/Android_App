@@ -69,3 +69,12 @@ fun AppTopBar(
         )
     )
 }
+fun isValidName(name: String): Boolean {
+    return name.trim().isNotEmpty()
+}
+
+// ✅ Hàm kiểm tra số điện thoại
+fun isValidPhoneNumber(phone: String): Boolean {
+    val regex = Regex("^\\+?[0-9]{9,15}$")
+    return regex.matches(phone)
+}
