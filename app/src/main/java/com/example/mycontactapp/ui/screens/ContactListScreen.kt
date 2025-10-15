@@ -30,6 +30,7 @@ import com.example.mycontactapp.ui.ContactViewModel
 import com.example.mycontactapp.ui.components.AppTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ContactListScreen(navController: NavHostController, viewModel: ContactViewModel = viewModel()) {
     val context = LocalContext.current // Giữ context nếu cần cho Toast hoặc các việc khác sau này
@@ -169,17 +170,32 @@ fun ContactListScreen(navController: NavHostController, viewModel: ContactViewMo
             confirmButton = {
                 TextButton(
                     onClick = {
-                        if (nameInput.text.isNotBlank() && phoneNumberInput.text.isNotBlank()) {
-                            viewModel.addContact(nameInput.text, phoneNumberInput.text)
+                        val name = nameInput.text.trim()
+                        val phone = phoneNumberInput.text.trim()
 
-                            nameInput = TextFieldValue("")
-                            phoneNumberInput = TextFieldValue("")
-                            showAddContactDialog = false
+                        val isNameValid = name.isNotEmpty()
+                        val isPhoneValid = Regex("^\\+?0[0-9]{9}$").matches(phone)
+
+                        if (!isNameValid) {
+                            Toast.makeText(context, "Tên không được để trống.", Toast.LENGTH_SHORT).show()
+                            return@TextButton
                         }
+
+                        if (!isPhoneValid) {
+                            Toast.makeText(context, "Số điện thoại không hợp lệ.", Toast.LENGTH_SHORT).show()
+                            return@TextButton
+                        }
+
+                        viewModel.addContact(name, phone)
+
+                        nameInput = TextFieldValue("")
+                        phoneNumberInput = TextFieldValue("")
+                        showAddContactDialog = false
                     }
                 ) {
                     Text("Thêm")
                 }
+
             },
             dismissButton = {
                 TextButton(onClick = { showAddContactDialog = false }) {
