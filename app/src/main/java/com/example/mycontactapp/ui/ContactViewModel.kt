@@ -2,7 +2,6 @@ package com.example.mycontactapp.ui
 
 // Import thêm AndroidViewModel
 import android.app.Application
-import androidx.compose.animation.core.copy
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mycontactapp.ContactApplication // Import lớp Application
@@ -21,6 +20,12 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
 
     // Lấy repository từ lớp Application
     private val repository: IContactRepository = (application as ContactApplication).repository
+
+    fun syncContactsFromSystem() {
+        viewModelScope.launch {
+            repository.syncSystemContacts()
+        }
+    }
 
     // Phần còn lại của ViewModel giữ nguyên
     val allContacts: StateFlow<List<Contact>> = repository.getAllContacts()

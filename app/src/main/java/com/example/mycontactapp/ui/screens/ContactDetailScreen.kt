@@ -17,6 +17,8 @@ import com.example.mycontactapp.navigation.AppDestinations // Thêm import
 import com.example.mycontactapp.ui.components.AppTopBar
 import com.example.mycontactapp.utils.makeCall
 import android.content.pm.PackageManager
+import androidx.compose.ui.res.colorResource
+import com.example.mycontactapp.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mycontactapp.ui.ContactViewModel
 
@@ -63,7 +65,7 @@ fun ContactDetailScreen(
                 title = contact?.name ?: "Chi Tiết",
                 canNavigateBack = true,
                 onNavigateUp = { navController.popBackStack() }, // Sử dụng popBackStack để quay lại
-                showActions = contact != null, // Chỉ hiển thị actions nếu có contact
+                showEditDeleteActions = contact != null, // Chỉ hiển thị actions nếu có contact
                 onEditClick = {
                     // Điều hướng đến màn hình sửa với contactId
                     navController.navigate("${AppDestinations.EDIT_CONTACT_ROUTE}/${contact?.id}")
@@ -102,6 +104,10 @@ fun ContactDetailScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth(0.8f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.green),     // màu nền
+                        contentColor = colorResource(id = R.color.white)           // màu chữ
+                    )
                 ) {
                     Text("Gọi ${it.name}")
                 }

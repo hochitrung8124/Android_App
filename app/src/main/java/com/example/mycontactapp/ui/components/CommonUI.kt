@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete // Icon xóa
 import androidx.compose.material.icons.filled.Edit // Icon sửa
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -16,9 +17,11 @@ fun AppTopBar(
     title: String,
     canNavigateBack: Boolean = false,
     onNavigateUp: () -> Unit = {},
-    showActions: Boolean = false, // Cờ để hiển thị actions
+    showEditDeleteActions: Boolean = false, // Đổi tên cho rõ ràng
     onEditClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {}
+    onDeleteClick: () -> Unit = {},
+    showSyncAction: Boolean = false, // Cờ mới cho nút Sync
+    onSyncClick: () -> Unit = {} // Action mới
 ) {
     TopAppBar(
         title = { Text(title) },
@@ -33,7 +36,7 @@ fun AppTopBar(
             }
         },
         actions = {
-            if (showActions) {
+            if (showEditDeleteActions) {
                 IconButton(onClick = onEditClick) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
@@ -46,6 +49,14 @@ fun AppTopBar(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = "Xóa liên hệ",
                         tint = Color.White // Tùy chỉnh màu nếu cần
+                    )
+                }
+            }
+            if (showSyncAction) {
+                IconButton(onClick = onSyncClick) {
+                    Icon(
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = "Đồng bộ danh bạ"
                     )
                 }
             }

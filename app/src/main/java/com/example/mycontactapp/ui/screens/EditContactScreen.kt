@@ -7,9 +7,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.mycontactapp.R
 import com.example.mycontactapp.ui.ContactViewModel
 import com.example.mycontactapp.ui.components.AppTopBar
 
@@ -87,7 +89,11 @@ fun EditContactScreen(
                             Toast.makeText(context, "Tên và số điện thoại không được để trống.", Toast.LENGTH_SHORT).show()
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(0.8f)
+                    modifier = Modifier.fillMaxWidth(0.8f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.green),     // màu nền
+                        contentColor = colorResource(id = R.color.white)           // màu chữ
+                    )
                 ) {
                     Text("Lưu Thay Đổi")
                 }

@@ -1,5 +1,9 @@
 package com.example.mycontactapp.ui.screens
 
+import android.Manifest
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,9 +51,29 @@ fun ContactListScreen(navController: NavHostController, viewModel: ContactViewMo
                     it.phoneNumber.contains(searchQuery, ignoreCase = true)
         }
     }
+    val readContactsPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                // Nếu được cấp quyền, bắt đầu đồng bộ
+                Toast.makeText(context, "Đang đồng bộ danh bạ...", Toast.LENGTH_SHORT).show()
+                viewModel.syncContactsFromSystem()
+            } else {
+                // Nếu từ chối, thông báo cho người dùng
+                Toast.makeText(context, "Quyền đọc danh bạ bị từ chối.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
 
     Scaffold(
-        topBar = { AppTopBar(title = "Danh Bạ Điện Thoại") },
+        topBar = { AppTopBar(title = "Danh Bạ Điện Thoại",
+            showSyncAction = true,
+            onSyncClick = {
+                // Khi nhấn nút, khởi chạy yêu cầu quyền
+                readContactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+            }
+            )
+                 },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showAddContactDialog = true },
